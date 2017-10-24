@@ -1,0 +1,48 @@
+{
+    "name":        "gregurco/guzzle-bundle-cache-plugin",
+    "type":        "library",
+    "description": "Cache Plugin for Guzzle Bundle, a PHP HTTP client library and framework for building RESTful web service clients",
+    "keywords":    ["cache", "middleware", "plugin", "framework", "http", "rest", "web service", "curl", "client", "HTTP client"],
+    "homepage":    "https://github.com/gregurco/GuzzleBundleCachePlugin",
+    "license":     "MIT",
+
+    "authors": [
+        {
+            "name":     "Gregurco Vlad",
+            "email":    "gregurco.vlad@gmail.com",
+            "homepage": "https://github.com/gregurco"
+        },
+        {
+            "name":     "Community",
+            "homepage": "https://github.com/gregurco/GuzzleBundleCachePlugin/contributors"
+        }
+    ],
+
+    "require": {
+        "php":                              "^7.0",
+        "guzzlehttp/guzzle":                "^6.0",
+        "eightpoints/guzzle-bundle":        "dev-master",
+        "symfony/http-kernel":              "~2.3|~3.0",
+        "symfony/config":                   "~2.3|~3.0",
+        "symfony/dependency-injection":     "~2.3|~3.0",
+        "symfony/expression-language":      "~2.3|~3.0",
+        "kevinrob/guzzle-cache-middleware": "~2.1"
+    },
+
+    "require-dev": {
+        "phpunit/phpunit":          "~6.1",
+        "satooshi/php-coveralls":   "~1.0"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "Gregurco\\Bundle\\GuzzleBundleCachePlugin\\": "src"
+        }
+    },
+
+    "autoload-dev": {
+        "psr-4": {
+            "Gregurco\\Bundle\\GuzzleBundleCachePlugin\\Tests\\": "tests"
+        }
+    }
+}
