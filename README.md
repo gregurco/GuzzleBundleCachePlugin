@@ -1,0 +1,2 @@
+# GuzzleBundleCachePlugin
+CachePlugin for EightPointsGuzzleBundle
