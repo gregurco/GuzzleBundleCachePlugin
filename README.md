@@ -1,6 +1,8 @@
 # Guzzle Bundle Cache Plugin
 
-[![Build Status](https://travis-ci.org/gregurco/GuzzleBundleCachePlugin.svg?branch=master)](https://travis-ci.org/gregurco/GuzzleBundleCachePlugin) [![Coverage Status](https://coveralls.io/repos/gregurco/GuzzleBundleCachePlugin/badge.svg?branch=master)](https://coveralls.io/r/gregurco/GuzzleBundleCachePlugin)
+[![Build Status](https://travis-ci.org/gregurco/GuzzleBundleCachePlugin.svg?branch=master)](https://travis-ci.org/gregurco/GuzzleBundleCachePlugin)
+[![Coverage Status](https://coveralls.io/repos/gregurco/GuzzleBundleCachePlugin/badge.svg?branch=master)](https://coveralls.io/r/gregurco/GuzzleBundleCachePlugin)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/08400bb3-540d-4616-b0b3-f694a73a72cf/mini.png)](https://insight.sensiolabs.com/projects/08400bb3-540d-4616-b0b3-f694a73a72cf)
 
 This plugin integrates cache functionality into Guzzle Bundle, a bundle for building RESTful web service clients.
 
@@ -26,7 +28,6 @@ Using [composer][3]:
 ``` bash
 $ composer require gregurco/guzzle-bundle-cache-plugin
 ```
-
 
 ## Usage
 ### Enable bundle
