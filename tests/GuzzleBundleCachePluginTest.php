@@ -76,6 +76,8 @@ class GuzzleBundleCachePluginTest extends TestCase
 
         $this->assertTrue($container->hasDefinition('guzzle_bundle_cache_plugin.middleware.api_payment'));
         $this->assertCount(1, $handler->getMethodCalls());
+        $this->assertTrue(isset($handler->getMethodCalls()[0][1][1]), 'No name provided for middleware');
+        $this->assertEquals('cache', $handler->getMethodCalls()[0][1][1]);
 
         $clientMiddlewareDefinition = $container->getDefinition('guzzle_bundle_cache_plugin.middleware.api_payment');
         $this->assertCount(0, $clientMiddlewareDefinition->getArguments());
