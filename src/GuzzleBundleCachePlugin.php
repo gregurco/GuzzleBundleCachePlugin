@@ -44,7 +44,7 @@ class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundleP
 
             $cacheMiddlewareExpression = new Expression(sprintf('service("%s")', $cacheMiddlewareDefinitionName));
 
-            $handler->addMethodCall('push', [$cacheMiddlewareExpression]);
+            $handler->addMethodCall('push', [$cacheMiddlewareExpression, 'cache']);
         }
     }
 
