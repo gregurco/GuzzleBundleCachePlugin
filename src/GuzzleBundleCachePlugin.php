@@ -4,6 +4,7 @@ namespace Gregurco\Bundle\GuzzleBundleCachePlugin;
 
 use EightPoints\Bundle\GuzzleBundle\EightPointsGuzzleBundlePlugin;
 use Gregurco\Bundle\GuzzleBundleCachePlugin\DependencyInjection\GuzzleCacheExtension;
+use Gregurco\Bundle\GuzzleBundleCachePlugin\EventListener\InvalidateRequestSubscriber;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -47,14 +48,13 @@ class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundleP
 
             $handler->addMethodCall('push', [$cacheMiddlewareExpression, 'cache']);
 
-            $eventDispatcherName = sprintf('guzzle_cache.event_dispatcher.%s', $clientName);
+            $eventDispatcherName       = sprintf('guzzle_cache.event_dispatcher.%s', $clientName);
             $eventDispatcherDefinition = new Definition(EventDispatcher::class);
             $eventDispatcherDefinition
-                ->setPublic(true)
-            ;
+                ->setPublic(true);
             $container->setDefinition($eventDispatcherName, $eventDispatcherDefinition);
 
-            $invalidateRequestSubscriberName = sprintf('guzzle_cache.event_subscriber.invalidate_%s', $clientName);
+            $invalidateRequestSubscriberName       = sprintf('guzzle_cache.event_subscriber.invalidate_%s', $clientName);
             $invalidateRequestSubscriberDefinition = new Definition(InvalidateRequestSubscriber::class);
             $invalidateRequestSubscriberDefinition
                 ->addArgument(new Reference($cacheMiddlewareDefinitionName))
