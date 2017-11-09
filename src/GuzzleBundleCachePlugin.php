@@ -14,15 +14,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundlePlugin
 {
-    public function build(ContainerBuilder $container)
-    {
-        $container->addCompilerPass(new RegisterListenersPass(
-            'guzzle_cache.event_dispatcher',
-            'guzzle_cache.event_listener',
-            'guzzle_cache.event_subscriber'
-        ));
-    }
-
     /**
      * @param array            $configs
      * @param ContainerBuilder $container
@@ -54,6 +45,22 @@ class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundleP
             $cacheMiddlewareExpression = new Expression(sprintf('service("%s")', $cacheMiddlewareDefinitionName));
 
             $handler->addMethodCall('push', [$cacheMiddlewareExpression, 'cache']);
+
+            $invalidateRequestSubscriberName = sprintf('guzzle_cache.event_subscriber.invalidate_%s', $clientName);
+            $invalidateRequestSubscriberDefinition = new Definition(InvalidateRequestSubscriber::class);
+            $invalidateRequestSubscriberDefinition
+                ->addArgument(new Reference($cacheMiddlewareDefinitionName))
+                ->addTag(sprintf('guzzle_cache.event_subscriber.%s', $clientName))
+            ;
+            $container->setDefinition($invalidateRequestSubscriberName, $invalidateRequestSubscriberDefinition);
+
+            $registerListenerPass = new RegisterListenersPass(
+                sprintf('guzzle_cache.event_dispatcher.%s', $clientName),
+                sprintf('guzzle_cache.event_listener.%s', $clientName),
+                sprintf('guzzle_cache.event_subscriber.%s', $clientName)
+            );
+
+            $registerListenerPass->process($container);
         }
     }
 

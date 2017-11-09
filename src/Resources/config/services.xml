@@ -8,8 +8,6 @@
     </parameters>
 
     <services>
-        <service id="guzzle_cache.event_dispatcher" class="Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher" public="true">
-            <argument type="service" id="service_container" />
-        </service>
+        <service id="guzzle_cache.event_dispatcher" class="Symfony\Component\EventDispatcher\EventDispatcher" public="true" />
     </services>
 </container>
