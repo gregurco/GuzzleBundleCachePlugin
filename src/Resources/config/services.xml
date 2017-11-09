@@ -6,8 +6,4 @@
     <parameters>
         <parameter key="guzzle_bundle_cache_plugin.middleware.class">Kevinrob\GuzzleCache\CacheMiddleware</parameter>
     </parameters>
-
-    <services>
-        <service id="guzzle_cache.event_dispatcher" class="Symfony\Component\EventDispatcher\EventDispatcher" public="true" />
-    </services>
 </container>

@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -46,6 +47,13 @@ class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundleP
 
             $handler->addMethodCall('push', [$cacheMiddlewareExpression, 'cache']);
 
+            $eventDispatcherName = sprintf('guzzle_cache.event_dispatcher.%s', $clientName);
+            $eventDispatcherDefinition = new Definition(EventDispatcher::class);
+            $eventDispatcherDefinition
+                ->setPublic(true)
+            ;
+            $container->setDefinition($eventDispatcherName, $eventDispatcherDefinition);
+
             $invalidateRequestSubscriberName = sprintf('guzzle_cache.event_subscriber.invalidate_%s', $clientName);
             $invalidateRequestSubscriberDefinition = new Definition(InvalidateRequestSubscriber::class);
             $invalidateRequestSubscriberDefinition
@@ -55,7 +63,7 @@ class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundleP
             $container->setDefinition($invalidateRequestSubscriberName, $invalidateRequestSubscriberDefinition);
 
             $registerListenerPass = new RegisterListenersPass(
-                sprintf('guzzle_cache.event_dispatcher.%s', $clientName),
+                $eventDispatcherName,
                 sprintf('guzzle_cache.event_listener.%s', $clientName),
                 sprintf('guzzle_cache.event_subscriber.%s', $clientName)
             );
