@@ -1,6 +1,6 @@
 <?php
 
-namespace Gregurco\Bundle\GuzzleBundleCachePlugin;
+namespace Gregurco\Bundle\GuzzleBundleCachePlugin\EventListener;
 
 use Gregurco\Bundle\GuzzleBundleCachePlugin\Event\InvalidateRequestEvent;
 use Kevinrob\GuzzleCache\CacheMiddleware;
