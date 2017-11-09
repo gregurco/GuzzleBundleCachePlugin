@@ -2,6 +2,7 @@
 
 namespace Gregurco\Bundle\GuzzleBundleCachePlugin\EventListener;
 
+use Gregurco\Bundle\GuzzleBundleCachePlugin\CacheEvents;
 use Gregurco\Bundle\GuzzleBundleCachePlugin\Event\InvalidateRequestEvent;
 use Kevinrob\GuzzleCache\CacheMiddleware;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
