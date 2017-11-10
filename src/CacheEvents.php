@@ -13,5 +13,5 @@ final class CacheEvents
      *
      * @var string
      */
-    const INVALIDATE = 'guzzle_cache.invalidate';
+    const INVALIDATE = 'guzzle_bundle_cache_plugin.invalidate';
 }
