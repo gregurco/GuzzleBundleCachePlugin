@@ -1,6 +1,6 @@
 <?php
 
-namespace Gregurco\Bundle\GuzzleBundleWssePlugin\Test\DependencyInjection;
+namespace Gregurco\Bundle\GuzzleBundleCachePlugin\Test\DependencyInjection;
 
 use Gregurco\Bundle\GuzzleBundleCachePlugin\DependencyInjection\GuzzleCacheExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

@@ -48,24 +48,24 @@ class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundleP
 
             $handler->addMethodCall('push', [$cacheMiddlewareExpression, 'cache']);
 
-            $eventDispatcherName       = sprintf('guzzle_cache.event_dispatcher.%s', $clientName);
+            $eventDispatcherName       = sprintf('guzzle_bundle_cache_plugin.event_dispatcher.%s', $clientName);
             $eventDispatcherDefinition = new Definition(EventDispatcher::class);
             $eventDispatcherDefinition
                 ->setPublic(true);
             $container->setDefinition($eventDispatcherName, $eventDispatcherDefinition);
 
-            $invalidateRequestSubscriberName       = sprintf('guzzle_cache.event_subscriber.invalidate_%s', $clientName);
+            $invalidateRequestSubscriberName       = sprintf('guzzle_bundle_cache_plugin.event_subscriber.invalidate_%s', $clientName);
             $invalidateRequestSubscriberDefinition = new Definition(InvalidateRequestSubscriber::class);
             $invalidateRequestSubscriberDefinition
                 ->addArgument(new Reference($cacheMiddlewareDefinitionName))
-                ->addTag(sprintf('guzzle_cache.event_subscriber.%s', $clientName))
+                ->addTag(sprintf('guzzle_bundle_cache_plugin.event_subscriber.%s', $clientName))
             ;
             $container->setDefinition($invalidateRequestSubscriberName, $invalidateRequestSubscriberDefinition);
 
             $registerListenerPass = new RegisterListenersPass(
                 $eventDispatcherName,
-                sprintf('guzzle_cache.event_listener.%s', $clientName),
-                sprintf('guzzle_cache.event_subscriber.%s', $clientName)
+                sprintf('guzzle_bundle_cache_plugin.event_listener.%s', $clientName),
+                sprintf('guzzle_bundle_cache_plugin.event_subscriber.%s', $clientName)
             );
 
             $registerListenerPass->process($container);
