@@ -83,7 +83,7 @@ class GuzzleBundleCachePluginTest extends TestCase
         $this->assertCount(0, $clientMiddlewareDefinition->getArguments());
 
         $this->assertTrue($container->hasDefinition('guzzle_bundle_cache_plugin.event_dispatcher.api_payment'));
-        $this->assertTrue($container->hasDefinition('guzzle_bundle_cache_plugin.event_subscriber.api_payment'));
+        $this->assertTrue($container->hasDefinition('guzzle_bundle_cache_plugin.event_subscriber.invalidate_api_payment'));
     }
 
     public function testLoadForClientWithWrongStrategy()
