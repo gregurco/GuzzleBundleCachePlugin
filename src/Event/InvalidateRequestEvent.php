@@ -3,29 +3,23 @@
 namespace Gregurco\Bundle\GuzzleBundleCachePlugin\Event;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\UriResolver;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;
 use Symfony\Component\EventDispatcher\Event;
 use function GuzzleHttp\Psr7\uri_for;
 
 class InvalidateRequestEvent extends Event
 {
-    /**
-     * @var Request[]
-     */
+    /** @var RequestInterface[] */
     private $requests;
 
-    /**
-     * @var Client
-     */
+    /** @var Client */
     private $client;
 
     /**
-     * InvalidateRequestEvent constructor.
-     *
-     * @param Client    $client
-     * @param Request[] $requests
+     * @param Client $client
+     * @param RequestInterface[] $requests
      */
     public function __construct(Client $client, array $requests)
     {
@@ -35,9 +29,9 @@ class InvalidateRequestEvent extends Event
     }
 
     /**
-     * @param Request $request
+     * @param RequestInterface $request
      */
-    public function addRequest(Request $request): void
+    public function addRequest(RequestInterface $request)
     {
         $request          = $request->withUri($this->buildUri($this->client, $request->getUri()));
         $this->requests[] = $request;
@@ -70,7 +64,7 @@ class InvalidateRequestEvent extends Event
     }
 
     /**
-     * @return Request[]
+     * @return RequestInterface[]
      */
     public function getRequests(): array
     {

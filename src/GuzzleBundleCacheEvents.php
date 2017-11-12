@@ -2,7 +2,7 @@
 
 namespace Gregurco\Bundle\GuzzleBundleCachePlugin;
 
-final class CacheEvents
+final class GuzzleBundleCacheEvents
 {
     /**
      * The INVALIDATE event occurs manually.
