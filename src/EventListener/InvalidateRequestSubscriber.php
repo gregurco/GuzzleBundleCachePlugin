@@ -2,21 +2,17 @@
 
 namespace Gregurco\Bundle\GuzzleBundleCachePlugin\EventListener;
 
-use Gregurco\Bundle\GuzzleBundleCachePlugin\CacheEvents;
+use Gregurco\Bundle\GuzzleBundleCachePlugin\GuzzleBundleCacheEvents;
 use Gregurco\Bundle\GuzzleBundleCachePlugin\Event\InvalidateRequestEvent;
 use Kevinrob\GuzzleCache\CacheMiddleware;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class InvalidateRequestSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var CacheMiddleware
-     */
+    /** @var CacheMiddleware */
     private $cacheMiddleware;
 
     /**
-     * InvalidateRequestSubscriber constructor.
-     *
      * @param CacheMiddleware $cacheMiddleware
      */
     public function __construct(CacheMiddleware $cacheMiddleware)
@@ -27,10 +23,10 @@ class InvalidateRequestSubscriber implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents() : array
     {
         return [
-            CacheEvents::INVALIDATE => [
+            GuzzleBundleCacheEvents::INVALIDATE => [
                 ['invalidate', 0],
             ],
         ];
