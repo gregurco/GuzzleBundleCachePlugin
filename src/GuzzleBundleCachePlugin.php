@@ -4,6 +4,7 @@ namespace Gregurco\Bundle\GuzzleBundleCachePlugin;
 
 use EightPoints\Bundle\GuzzleBundle\EightPointsGuzzleBundlePlugin;
 use Gregurco\Bundle\GuzzleBundleCachePlugin\DependencyInjection\GuzzleCacheExtension;
+use Gregurco\Bundle\GuzzleBundleCachePlugin\EventDispatcher\NullEventDispatcher;
 use Gregurco\Bundle\GuzzleBundleCachePlugin\EventListener\InvalidateRequestSubscriber;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -34,6 +35,15 @@ class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundleP
      */
     public function loadForClient(array $config, ContainerBuilder $container, string $clientName, Definition $handler)
     {
+        $eventDispatcherName = sprintf('guzzle_bundle_cache_plugin.event_dispatcher.%s', $clientName);
+
+        $eventDispatcherClass = $config['enabled'] ? EventDispatcher::class : NullEventDispatcher::class;
+
+        $eventDispatcherDefinition = new Definition($eventDispatcherClass);
+        $eventDispatcherDefinition
+            ->setPublic(true);
+        $container->setDefinition($eventDispatcherName, $eventDispatcherDefinition);
+
         if ($config['enabled']) {
             $cacheMiddlewareDefinitionName = sprintf('guzzle_bundle_cache_plugin.middleware.%s', $clientName);
             $cacheMiddlewareDefinition     = new Definition('%guzzle_bundle_cache_plugin.middleware.class%');
@@ -47,12 +57,6 @@ class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundleP
             $cacheMiddlewareExpression = new Expression(sprintf('service("%s")', $cacheMiddlewareDefinitionName));
 
             $handler->addMethodCall('push', [$cacheMiddlewareExpression, 'cache']);
-
-            $eventDispatcherName       = sprintf('guzzle_bundle_cache_plugin.event_dispatcher.%s', $clientName);
-            $eventDispatcherDefinition = new Definition(EventDispatcher::class);
-            $eventDispatcherDefinition
-                ->setPublic(true);
-            $container->setDefinition($eventDispatcherName, $eventDispatcherDefinition);
 
             $invalidateRequestSubscriberName       = sprintf('guzzle_bundle_cache_plugin.event_subscriber.invalidate_%s', $clientName);
             $invalidateRequestSubscriberDefinition = new Definition(InvalidateRequestSubscriber::class);
