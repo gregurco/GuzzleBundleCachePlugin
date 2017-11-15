@@ -4,12 +4,9 @@ namespace Gregurco\Bundle\GuzzleBundleCachePlugin\EventListener;
 
 use Gregurco\Bundle\GuzzleBundleCachePlugin\GuzzleBundleCacheEvents;
 use Gregurco\Bundle\GuzzleBundleCachePlugin\Event\InvalidateRequestEvent;
-use Psr\Http\Message\UriInterface;
 use Kevinrob\GuzzleCache\CacheMiddleware;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7;
 
 class InvalidateRequestSubscriber implements EventSubscriberInterface
 {
@@ -32,7 +29,7 @@ class InvalidateRequestSubscriber implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents() : array
+    public static function getSubscribedEvents(): array
     {
         return [
             GuzzleBundleCacheEvents::INVALIDATE => [
@@ -51,33 +48,8 @@ class InvalidateRequestSubscriber implements EventSubscriberInterface
 
         if (isset($this->cacheMiddlewares[$objectIdentifier])) {
             $cacheStorage = $this->cacheMiddlewares[$objectIdentifier]->getCacheStorage();
-
-            $request = $this->buildRequest(
-                $event->getMethod(),
-                $client->getConfig('base_uri'),
-                $event->getUri()
-            );
-
-            $cacheStorage->delete($request);
+            $cacheStorage->delete($event->getRequest());
         }
-    }
-
-    /**
-     * @param string $method
-     * @param UriInterface|null $baseUri
-     * @param string $requestUri
-     *
-     * @return Request
-     */
-    protected function buildRequest(string $method, $baseUri, string $requestUri) : Request
-    {
-        if ($baseUri instanceof UriInterface) {
-            $uri = Psr7\UriResolver::resolve($baseUri, Psr7\uri_for($requestUri));
-        } else {
-            $uri = $requestUri;
-        }
-
-        return new Request($method, $uri);
     }
 
     /**
@@ -85,7 +57,7 @@ class InvalidateRequestSubscriber implements EventSubscriberInterface
      *
      * @return string
      */
-    protected function getClientIdentifier(Client $client) : string
+    protected function getClientIdentifier(Client $client): string
     {
         return spl_object_hash($client);
     }

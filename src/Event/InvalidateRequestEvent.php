@@ -2,8 +2,11 @@
 
 namespace Gregurco\Bundle\GuzzleBundleCachePlugin\Event;
 
-use GuzzleHttp\Client;
+use Psr\Http\Message\UriInterface;
 use Symfony\Component\EventDispatcher\Event;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Psr7\Request;
 
 class InvalidateRequestEvent extends Event
 {
@@ -50,5 +53,21 @@ class InvalidateRequestEvent extends Event
     public function getUri(): string
     {
         return $this->uri;
+    }
+
+    /**
+     * @return Request
+     */
+    public function getRequest(): Request
+    {
+        $baseUri = $this->client->getConfig('base_uri');
+
+        if ($baseUri instanceof UriInterface) {
+            $uri = Psr7\UriResolver::resolve($baseUri, Psr7\uri_for($this->uri));
+        } else {
+            $uri = $this->uri;
+        }
+
+        return new Request($this->method, $uri);
     }
 }
