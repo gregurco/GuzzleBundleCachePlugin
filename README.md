@@ -92,6 +92,19 @@ eight_points_guzzle:
 
 More information about cache strategies can be found here: [Kevinrob/guzzle-cache-middleware][2]
 
+### Invalidate cache
+```php
+# get client
+$apiPaymentClient = $this->get('eight_points_guzzle.client.api_payment');
+
+# do a request
+$apiPaymentClient->request('GET', 'ping');
+
+# invalidate cache
+$event = new InvalidateRequestEvent($apiPaymentClient, 'GET', 'ping');
+$this->get('event_dispatcher')->dispatch(GuzzleBundleCacheEvents::INVALIDATE, $event);
+```
+
 ## License
 This middleware is licensed under the MIT License - see the LICENSE file for details
 

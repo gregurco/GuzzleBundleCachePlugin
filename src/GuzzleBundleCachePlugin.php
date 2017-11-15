@@ -9,8 +9,6 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -48,27 +46,11 @@ class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundleP
 
             $handler->addMethodCall('push', [$cacheMiddlewareExpression, 'cache']);
 
-            $eventDispatcherName       = sprintf('guzzle_bundle_cache_plugin.event_dispatcher.%s', $clientName);
-            $eventDispatcherDefinition = new Definition(EventDispatcher::class);
-            $eventDispatcherDefinition
-                ->setPublic(true);
-            $container->setDefinition($eventDispatcherName, $eventDispatcherDefinition);
-
-            $invalidateRequestSubscriberName       = sprintf('guzzle_bundle_cache_plugin.event_subscriber.invalidate_%s', $clientName);
-            $invalidateRequestSubscriberDefinition = new Definition(InvalidateRequestSubscriber::class);
-            $invalidateRequestSubscriberDefinition
-                ->addArgument(new Reference($cacheMiddlewareDefinitionName))
-                ->addTag(sprintf('guzzle_bundle_cache_plugin.event_subscriber.%s', $clientName))
-            ;
-            $container->setDefinition($invalidateRequestSubscriberName, $invalidateRequestSubscriberDefinition);
-
-            $registerListenerPass = new RegisterListenersPass(
-                $eventDispatcherName,
-                sprintf('guzzle_bundle_cache_plugin.event_listener.%s', $clientName),
-                sprintf('guzzle_bundle_cache_plugin.event_subscriber.%s', $clientName)
-            );
-
-            $registerListenerPass->process($container);
+            $invalidateRequestSubscriberDefinition = $this->getInvalidateRequestSubscriberDefinition($container);
+            $invalidateRequestSubscriberDefinition->addMethodCall('addCacheMiddleware', [
+                new Reference('eight_points_guzzle.client.api_payment'),
+                new Reference($cacheMiddlewareDefinitionName)
+            ]);
         }
     }
 
@@ -91,5 +73,24 @@ class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundleP
     public function getPluginName(): string
     {
         return 'cache';
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     *
+     * @return Definition
+     */
+    protected function getInvalidateRequestSubscriberDefinition(ContainerBuilder $container) : Definition
+    {
+        $invalidateRequestSubscriberName = 'guzzle_bundle_cache_plugin.event_subscriber.invalidate_request';
+
+        if (!$container->hasDefinition($invalidateRequestSubscriberName)) {
+            $invalidateRequestSubscriberDefinition = new Definition(InvalidateRequestSubscriber::class);
+
+            $invalidateRequestSubscriberDefinition->addTag('kernel.event_subscriber');
+            $container->setDefinition($invalidateRequestSubscriberName, $invalidateRequestSubscriberDefinition);
+        }
+
+        return $container->getDefinition($invalidateRequestSubscriberName);
     }
 }
