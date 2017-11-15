@@ -6,4 +6,12 @@
     <parameters>
         <parameter key="guzzle_bundle_cache_plugin.middleware.class">Kevinrob\GuzzleCache\CacheMiddleware</parameter>
     </parameters>
+    
+    <services>
+        <service id="guzzle_bundle_cache_plugin.event_subscriber.invalidate_request"
+                 class="Gregurco\Bundle\GuzzleBundleCachePlugin\EventListener\InvalidateRequestSubscriber"
+        >
+            <tag name="kernel.event_subscriber"/>
+        </service>
+    </services>
 </container>

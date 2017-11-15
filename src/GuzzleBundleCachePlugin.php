@@ -4,7 +4,6 @@ namespace Gregurco\Bundle\GuzzleBundleCachePlugin;
 
 use EightPoints\Bundle\GuzzleBundle\EightPointsGuzzleBundlePlugin;
 use Gregurco\Bundle\GuzzleBundleCachePlugin\DependencyInjection\GuzzleCacheExtension;
-use Gregurco\Bundle\GuzzleBundleCachePlugin\EventListener\InvalidateRequestSubscriber;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -46,7 +45,7 @@ class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundleP
 
             $handler->addMethodCall('push', [$cacheMiddlewareExpression, 'cache']);
 
-            $invalidateRequestSubscriberDefinition = $this->getInvalidateRequestSubscriberDefinition($container);
+            $invalidateRequestSubscriberDefinition = $container->getDefinition('guzzle_bundle_cache_plugin.event_subscriber.invalidate_request');
             $invalidateRequestSubscriberDefinition->addMethodCall('addCacheMiddleware', [
                 new Reference('eight_points_guzzle.client.api_payment'),
                 new Reference($cacheMiddlewareDefinitionName)
@@ -73,24 +72,5 @@ class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundleP
     public function getPluginName(): string
     {
         return 'cache';
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     *
-     * @return Definition
-     */
-    protected function getInvalidateRequestSubscriberDefinition(ContainerBuilder $container) : Definition
-    {
-        $invalidateRequestSubscriberName = 'guzzle_bundle_cache_plugin.event_subscriber.invalidate_request';
-
-        if (!$container->hasDefinition($invalidateRequestSubscriberName)) {
-            $invalidateRequestSubscriberDefinition = new Definition(InvalidateRequestSubscriber::class);
-
-            $invalidateRequestSubscriberDefinition->addTag('kernel.event_subscriber');
-            $container->setDefinition($invalidateRequestSubscriberName, $invalidateRequestSubscriberDefinition);
-        }
-
-        return $container->getDefinition($invalidateRequestSubscriberName);
     }
 }

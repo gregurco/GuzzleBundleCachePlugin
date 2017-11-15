@@ -35,7 +35,9 @@ class InvalidateRequestSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents() : array
     {
         return [
-            GuzzleBundleCacheEvents::INVALIDATE => 'invalidate',
+            GuzzleBundleCacheEvents::INVALIDATE => [
+                ['invalidate', 0],
+            ],
         ];
     }
 
