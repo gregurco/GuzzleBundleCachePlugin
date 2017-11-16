@@ -33,7 +33,8 @@ class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundleP
     {
         if ($config['enabled']) {
             $cacheMiddlewareDefinitionName = sprintf('guzzle_bundle_cache_plugin.middleware.%s', $clientName);
-            $cacheMiddlewareDefinition     = new Definition('%guzzle_bundle_cache_plugin.middleware.class%');
+            $cacheMiddlewareDefinition = new Definition('%guzzle_bundle_cache_plugin.middleware.class%');
+            $cacheMiddlewareDefinition->setPublic(true);
 
             if ($config['strategy']) {
                 $cacheMiddlewareDefinition->addArgument(new Reference($config['strategy']));
