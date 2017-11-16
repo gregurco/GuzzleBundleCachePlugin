@@ -47,7 +47,7 @@ class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundleP
 
             $invalidateRequestSubscriberDefinition = $container->getDefinition('guzzle_bundle_cache_plugin.event_subscriber.invalidate_request');
             $invalidateRequestSubscriberDefinition->addMethodCall('addCacheMiddleware', [
-                new Reference('eight_points_guzzle.client.api_payment'),
+                new Reference(sprintf('eight_points_guzzle.client.%s', $clientName)),
                 new Reference($cacheMiddlewareDefinitionName)
             ]);
         }
