@@ -3,12 +3,14 @@
 namespace Gregurco\Bundle\GuzzleBundleCachePlugin\Test;
 
 use EightPoints\Bundle\GuzzleBundle\EightPointsGuzzleBundlePlugin;
+use Gregurco\Bundle\GuzzleBundleCachePlugin\EventListener\InvalidateRequestSubscriber;
 use Gregurco\Bundle\GuzzleBundleCachePlugin\GuzzleBundleCachePlugin;
+use GuzzleHttp\Client;
 use Kevinrob\GuzzleCache\CacheMiddleware;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use PHPUnit\Framework\TestCase;
 
@@ -62,15 +64,20 @@ class GuzzleBundleCachePluginTest extends TestCase
             CacheMiddleware::class,
             $container->getParameter('guzzle_bundle_cache_plugin.middleware.class')
         );
+
+        $this->assertTrue($container->hasDefinition('guzzle_bundle_cache_plugin.event_subscriber.invalidate_request'));
+        $this->assertEquals(
+            InvalidateRequestSubscriber::class,
+            $container->getDefinition('guzzle_bundle_cache_plugin.event_subscriber.invalidate_request')->getClass()
+        );
     }
 
     public function testLoadForClientWithNoStrategy()
     {
-        $this->markTestSkipped('To refactor!');
-
         $handler = new Definition();
         $container = new ContainerBuilder();
 
+        $this->plugin->load([], $container);
         $this->plugin->loadForClient(
             ['enabled' => true, 'strategy' => null],
             $container, 'api_payment', $handler
@@ -83,20 +90,17 @@ class GuzzleBundleCachePluginTest extends TestCase
 
         $clientMiddlewareDefinition = $container->getDefinition('guzzle_bundle_cache_plugin.middleware.api_payment');
         $this->assertCount(0, $clientMiddlewareDefinition->getArguments());
-
-        $this->assertTrue($container->hasDefinition('guzzle_bundle_cache_plugin.event_dispatcher.api_payment'));
-        $this->assertTrue($container->hasDefinition('guzzle_bundle_cache_plugin.event_subscriber.invalidate_api_payment'));
     }
 
     public function testLoadForClientWithWrongStrategy()
     {
-        $this->markTestSkipped('To refactor!');
-
-        $this->expectException(ParameterNotFoundException::class);
+        $this->expectException(ServiceNotFoundException::class);
 
         $handler = new Definition();
         $container = new ContainerBuilder();
+        $container->setDefinition('eight_points_guzzle.client.api_payment', new Definition(Client::class));
 
+        $this->plugin->load([], $container);
         $this->plugin->loadForClient(
             ['enabled' => true, 'strategy' => 'fakeStrategyServiceId'],
             $container, 'api_payment', $handler
