@@ -3,23 +3,37 @@
 namespace Gregurco\Bundle\GuzzleBundleCachePlugin\Test\Event;
 
 use Gregurco\Bundle\GuzzleBundleCachePlugin\Event\InvalidateRequestEvent;
-use Psr\Http\Message\RequestInterface;
 use PHPUnit\Framework\TestCase;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
 
 class InvalidateRequestEventTest extends TestCase
 {
     public function testGeneralUseCase()
     {
-        $request = $this->getMockBuilder(RequestInterface::class)->getMock();
-        $request->expects($this->once())
-            ->method('getUri')
-            ->willReturn('http://api.domain.tld');
+        $baseUri = Psr7\uri_for('http://api.domain.tld');
 
-        $request->expects($this->once())
-            ->method('withUri')
-            ->willReturnSelf();
+        /** @var Client|\PHPUnit_Framework_MockObject_MockObject $client */
+        $client = $this->getMockBuilder(Client::class)->getMock();
+        $client->expects($this->once())
+            ->method('getConfig')
+            ->with('base_uri')
+            ->willReturn($baseUri);
 
+        $invalidateRequestEvent = new InvalidateRequestEvent($client, 'GET', '/ping');
+        $this->assertEquals($client, $invalidateRequestEvent->getClient());
+        $this->assertEquals('GET', $invalidateRequestEvent->getMethod());
+        $this->assertEquals('/ping', $invalidateRequestEvent->getUri());
+
+        $request = $invalidateRequestEvent->getRequest();
+        $this->assertInstanceOf(Request::class, $request);
+        $this->assertEquals('GET', $request->getMethod());
+        $this->assertEquals('http://api.domain.tld/ping', (string)$request->getUri());
+    }
+
+    public function testCaseWhenClientWithoutBaseUri()
+    {
         /** @var Client|\PHPUnit_Framework_MockObject_MockObject $client */
         $client = $this->getMockBuilder(Client::class)->getMock();
         $client->expects($this->once())
@@ -27,30 +41,14 @@ class InvalidateRequestEventTest extends TestCase
             ->with('base_uri')
             ->willReturn(null);
 
-        $invalidateRequestEvent = new InvalidateRequestEvent($client, [$request]);
+        $invalidateRequestEvent = new InvalidateRequestEvent($client, 'GET', 'http://api.domain.tld/ping');
         $this->assertEquals($client, $invalidateRequestEvent->getClient());
-        $this->assertEquals([$request], $invalidateRequestEvent->getRequests());
-    }
-    public function testCaseWhenClientHasBaseUri()
-    {
-        $request = $this->getMockBuilder(RequestInterface::class)->getMock();
-        $request->expects($this->once())
-            ->method('getUri')
-            ->willReturn('http://api.domain.tld');
+        $this->assertEquals('GET', $invalidateRequestEvent->getMethod());
+        $this->assertEquals('http://api.domain.tld/ping', $invalidateRequestEvent->getUri());
 
-        $request->expects($this->once())
-            ->method('withUri')
-            ->willReturnSelf();
-
-        /** @var Client|\PHPUnit_Framework_MockObject_MockObject $client */
-        $client = $this->getMockBuilder(Client::class)->getMock();
-        $client->expects($this->once())
-            ->method('getConfig')
-            ->with('base_uri')
-            ->willReturn('http://api.domain.tld');
-
-        $invalidateRequestEvent = new InvalidateRequestEvent($client, [$request]);
-        $this->assertEquals($client, $invalidateRequestEvent->getClient());
-        $this->assertEquals([$request], $invalidateRequestEvent->getRequests());
+        $request = $invalidateRequestEvent->getRequest();
+        $this->assertInstanceOf(Request::class, $request);
+        $this->assertEquals('GET', $request->getMethod());
+        $this->assertEquals('http://api.domain.tld/ping', (string)$request->getUri());
     }
 }
