@@ -31,12 +31,42 @@ $ composer require gregurco/guzzle-bundle-cache-plugin
 
 ## Usage
 ### Enable bundle
-``` php
-# app/AppKernel.php
 
+#### Symfony 2.x and 3.x
+Plugin will be activated/connected through bundle constructor in `app/AppKernel.php`, like this:
+
+``` php 
 new EightPoints\Bundle\GuzzleBundle\EightPointsGuzzleBundle([
     new Gregurco\Bundle\GuzzleBundleCachePlugin\GuzzleBundleCachePlugin(),
 ])
+```
+
+#### Symfony 4
+The registration of bundles was changed in Symfony 4 and now you have to change `src/Kernel.php` to achieve the same functionality.  
+Find next lines:
+
+```php
+foreach ($contents as $class => $envs) {
+    if (isset($envs['all']) || isset($envs[$this->environment])) {
+        yield new $class();
+    }
+}
+```
+
+and replace them by:
+
+```php
+foreach ($contents as $class => $envs) {
+    if (isset($envs['all']) || isset($envs[$this->environment])) {
+        if ($class === \EightPoints\Bundle\GuzzleBundle\EightPointsGuzzleBundle::class) {
+            yield new $class([
+                new \Gregurco\Bundle\GuzzleBundleCachePlugin\GuzzleBundleCachePlugin(),
+            ]);
+        } else {
+            yield new $class();
+        }
+    }
+}
 ```
 
 ### Basic configuration
