@@ -2,7 +2,7 @@
 
 namespace Gregurco\Bundle\GuzzleBundleCachePlugin;
 
-use EightPoints\Bundle\GuzzleBundle\EightPointsGuzzleBundlePlugin;
+use EightPoints\Bundle\GuzzleBundle\PluginInterface;
 use Gregurco\Bundle\GuzzleBundleCachePlugin\DependencyInjection\GuzzleCacheExtension;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -11,13 +11,13 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundlePlugin
+class GuzzleBundleCachePlugin extends Bundle implements PluginInterface
 {
     /**
      * @param array            $configs
      * @param ContainerBuilder $container
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $extension = new GuzzleCacheExtension();
         $extension->load($configs, $container);
@@ -29,7 +29,7 @@ class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundleP
      * @param string           $clientName
      * @param Definition       $handler
      */
-    public function loadForClient(array $config, ContainerBuilder $container, string $clientName, Definition $handler)
+    public function loadForClient(array $config, ContainerBuilder $container, string $clientName, Definition $handler): void
     {
         if ($config['enabled']) {
             $cacheMiddlewareDefinitionName = sprintf('guzzle_bundle_cache_plugin.middleware.%s', $clientName);
@@ -57,7 +57,7 @@ class GuzzleBundleCachePlugin extends Bundle implements EightPointsGuzzleBundleP
     /**
      * @param ArrayNodeDefinition $pluginNode
      */
-    public function addConfiguration(ArrayNodeDefinition $pluginNode)
+    public function addConfiguration(ArrayNodeDefinition $pluginNode): void
     {
         $pluginNode
             ->canBeEnabled()
