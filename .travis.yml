@@ -30,7 +30,7 @@ script:
     - php vendor/bin/phpunit --coverage-text
 
 after_success:
-    - travis_retry php vendor/bin/coveralls
+    - travis_retry php vendor/bin/php-coveralls
 
 matrix:
     exclude:
