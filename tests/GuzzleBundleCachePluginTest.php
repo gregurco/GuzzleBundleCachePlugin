@@ -2,7 +2,7 @@
 
 namespace Gregurco\Bundle\GuzzleBundleCachePlugin\Test;
 
-use EightPoints\Bundle\GuzzleBundle\EightPointsGuzzleBundlePlugin;
+use EightPoints\Bundle\GuzzleBundle\PluginInterface;
 use Gregurco\Bundle\GuzzleBundleCachePlugin\EventListener\InvalidateRequestSubscriber;
 use Gregurco\Bundle\GuzzleBundleCachePlugin\GuzzleBundleCachePlugin;
 use GuzzleHttp\Client;
@@ -28,7 +28,7 @@ class GuzzleBundleCachePluginTest extends TestCase
 
     public function testSubClassesOfPlugin()
     {
-        $this->assertInstanceOf(EightPointsGuzzleBundlePlugin::class, $this->plugin);
+        $this->assertInstanceOf(PluginInterface::class, $this->plugin);
         $this->assertInstanceOf(Bundle::class, $this->plugin);
     }
 
