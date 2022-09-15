@@ -67,7 +67,7 @@ if (is_subclass_of(EventDispatcher::class, EventDispatcherInterface::class)) {
             $baseUri = $this->client->getConfig('base_uri');
 
             if ($baseUri instanceof UriInterface) {
-                $uri = Psr7\UriResolver::resolve($baseUri, Psr7\uri_for($this->uri));
+                $uri = Psr7\UriResolver::resolve($baseUri, Psr7\Utils::uriFor($this->uri));
             } else {
                 $uri = $this->uri;
             }
@@ -131,7 +131,7 @@ if (is_subclass_of(EventDispatcher::class, EventDispatcherInterface::class)) {
             $baseUri = $this->client->getConfig('base_uri');
 
             if ($baseUri instanceof UriInterface) {
-                $uri = Psr7\UriResolver::resolve($baseUri, Psr7\uri_for($this->uri));
+                $uri = Psr7\UriResolver::resolve($baseUri, Psr7\Utils::uriFor($this->uri));
             } else {
                 $uri = $this->uri;
             }

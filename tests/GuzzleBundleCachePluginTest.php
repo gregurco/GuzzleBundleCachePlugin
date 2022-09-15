@@ -19,7 +19,7 @@ class GuzzleBundleCachePluginTest extends TestCase
     /** @var GuzzleBundleCachePlugin */
     protected $plugin;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

@@ -55,7 +55,7 @@ class InvalidateRequestSubscriberTest extends TestCase
 
     public function testGetSubscribedEventsResultType()
     {
-        $this->assertInternalType('array', InvalidateRequestSubscriber::getSubscribedEvents());
+        $this->assertIsArray(InvalidateRequestSubscriber::getSubscribedEvents());
     }
 
     public function testGetSubscribedEventsHasInvalidateEvent()
