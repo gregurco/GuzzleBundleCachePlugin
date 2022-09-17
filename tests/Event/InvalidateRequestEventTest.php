@@ -12,7 +12,7 @@ class InvalidateRequestEventTest extends TestCase
 {
     public function testGeneralUseCase()
     {
-        $baseUri = Psr7\uri_for('http://api.domain.tld');
+        $baseUri = Psr7\Utils::uriFor('http://api.domain.tld');
 
         /** @var Client|\PHPUnit_Framework_MockObject_MockObject $client */
         $client = $this->getMockBuilder(Client::class)->getMock();
