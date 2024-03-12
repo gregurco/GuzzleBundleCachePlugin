@@ -7,7 +7,7 @@
 This plugin integrates cache functionality into Guzzle Bundle, a bundle for building RESTful web service clients.
 
 ## Requirements
- - PHP 7.0 or above
+ - PHP 7.2 or above
  - [Guzzle Bundle][1]
  - [Guzzle Cache middleware][2]
 
