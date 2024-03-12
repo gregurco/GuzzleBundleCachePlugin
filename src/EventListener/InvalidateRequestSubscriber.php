@@ -61,5 +61,4 @@ class InvalidateRequestSubscriber implements EventSubscriberInterface
     {
         return spl_object_hash($client);
     }
-
 }
